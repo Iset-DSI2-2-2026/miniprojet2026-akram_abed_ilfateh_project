@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Genres - BookShelf{% endblock %}
+
+{% block body %}
+<div class="card">
+    <div class="card-header">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0;">🏷️ Liste des genres</h2>
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_genre_new') }}" class="btn btn-primary">+ Ajouter</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Description</th>
+                    <th>Couleur</th>
+                    <th>Livres</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for genre in genres %}
+                <tr>
+                    <td>{{ genre.nom }}</td>
+                    <td>{{ genre.description ?: '-' }}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 30px; height: 20px; background-color: {{ genre.couleur }}; border: 1px solid #ddd;"></div>
+                            {{ genre.couleur }}
+                        </div>
+                    </td>
+                    <td>{{ genre.livres|length }}</td>
+                    <td>
+                        <a href="{{ path('app_genre_show', {'id': genre.id}) }}" class="btn btn-sm btn-primary">Voir</a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('app_genre_edit', {'id': genre.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">Aucun genre trouvé</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

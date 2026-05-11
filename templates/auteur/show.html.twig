@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ auteur.prenom }} {{ auteur.nom }} - BookShelf{% endblock %}
+
+{% block body %}
+    <div class="card">
+        <div class="card-header">
+            <h3 class="mb-0">👤 {{ auteur.prenom }} {{ auteur.nom }}</h3>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <tr>
+                    <th style="width: 30%;">Nom complet</th>
+                    <td>{{ auteur.prenom }} {{ auteur.nom }}</td>
+                </tr>
+                <tr>
+                    <th>Nationalité</th>
+                    <td>{{ auteur.nationalite }}</td>
+                </tr>
+                <tr>
+                    <th>Biographie</th>
+                    <td>{{ auteur.biographie ?: 'Aucune biographie disponible' }}</td>
+                </tr>
+                <tr>
+                    <th>Nombre de livres</th>
+                    <td>{{ auteur.livres|length }} livre(s)</td>
+                </tr>
+            </table>
+
+            {% if auteur.livres|length > 0 %}
+                <h4 class="mt-4 mb-3">📚 Livres de cet auteur</h4>
+                <div class="row">
+                    {% for livre in auteur.livres %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>{{ livre.titre }}</h5>
+                                    <p class="small text-muted">Genre: {{ livre.genre.nom }}</p>
+                                    <a href="{{ path('app_livre_show', {'id': livre.id}) }}" class="btn btn-sm btn-primary">Voir</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-footer">
+            <div class="action-buttons">
+                <a href="{{ path('app_auteur_index') }}" class="btn btn-secondary">← Retour</a>
+                <a href="{{ path('app_auteur_edit', {'id': auteur.id}) }}" class="btn btn-warning">✏️ Modifier</a>
+                {{ include('auteur/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

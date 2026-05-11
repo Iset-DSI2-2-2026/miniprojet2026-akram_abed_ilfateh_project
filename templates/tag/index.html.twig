@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tags - BookShelf{% endblock %}
+
+{% block body %}
+<div class="card">
+    <div class="card-header">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0;">🔖 Liste des tags</h2>
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_tag_new') }}" class="btn btn-primary">+ Ajouter</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Couleur</th>
+                    <th>Livres associés</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tag in tags %}
+                <tr>
+                    <td>{{ tag.nom }}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 30px; height: 20px; background-color: {{ tag.couleur }}; border: 1px solid #ddd;"></div>
+                            {{ tag.couleur }}
+                        </div>
+                    </td>
+                    <td>{{ tag.livres|length }}</td>
+                    <td>
+                        <a href="{{ path('app_tag_show', {'id': tag.id}) }}" class="btn btn-sm btn-primary">Voir</a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('app_tag_edit', {'id': tag.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center">Aucun tag trouvé</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ma liste de lecture - BookShelf{% endblock %}
+
+{% block body %}
+<div class="card">
+    <div class="card-header">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0;">📚 Ma liste de lecture</h2>
+            <div>
+                {% if books|length > 0 %}
+                    <form method="post" action="{{ path('app_reading_clear') }}" style="display: inline;">
+                        <button class="btn btn-danger" onclick="return confirm('Vider toute la liste ?')">🗑️ Vider la liste</button>
+                    </form>
+                {% endif %}
+                <a href="{{ path('app_livre_index') }}" class="btn btn-primary">+ Ajouter des livres</a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if books|length > 0 %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+                {% for book in books %}
+                    <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 15px;">
+                        <h3 style="margin: 0 0 10px 0;">{{ book.titre }}</h3>
+                        <p style="margin: 5px 0; color: #666;">
+                            <strong>Auteur:</strong> {{ book.auteur.prenom }} {{ book.auteur.nom }}
+                        </p>
+                        <p style="margin: 5px 0; color: #666;">
+                            <strong>Genre:</strong> 
+                            <span style="display: inline-block; background-color: {{ book.genre.couleur }}; color: white; padding: 3px 10px; border-radius: 15px;">
+                                {{ book.genre.nom }}
+                            </span>
+                        </p>
+                        <p style="margin: 5px 0; color: #666;">
+                            <strong>Pages:</strong> {{ book.nbPages }}
+                        </p>
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <a href="{{ path('app_livre_show', {'id': book.id}) }}" class="btn btn-sm btn-primary">Voir le livre</a>
+                            <form method="post" action="{{ path('app_reading_remove', {'id': book.id}) }}" style="display: inline;">
+                                <button class="btn btn-sm btn-danger">❌ Retirer</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <div style="margin-top: 20px; text-align: center; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                <strong>Total:</strong> {{ books|length }} livre(s) dans votre liste de lecture
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 50px;">
+                <div style="font-size: 48px;">📚</div>
+                <h3>Votre liste de lecture est vide</h3>
+                <p>Ajoutez des livres depuis la page de détail d'un livre.</p>
+                <a href="{{ path('app_livre_index') }}" class="btn btn-primary">Parcourir les livres</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

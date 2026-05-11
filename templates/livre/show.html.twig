@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ livre.titre }} - BookShelf{% endblock %}
+
+{% block body %}
+<div class="card">
+    <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h2 style="margin: 0;">📖 {{ livre.titre }}</h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                {% if livre.imageName %}
+                    <img src="{{ asset('uploads/livres/' ~ livre.imageName) }}" alt="{{ livre.titre }}" style="max-height: 300px; border-radius: 8px;">
+                {% else %}
+                    <div style="background: #f8f9fa; padding: 50px; border-radius: 8px;">
+                        <span style="font-size: 80px;">📖</span>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <table class="table">
+                    <tr><th>Résumé</th><td>{{ livre.resume }}</td></tr>
+                    <tr><th>ISBN</th><td>{{ livre.isbn }}</td></tr>
+                    <tr><th>Nombre de pages</th><td>{{ livre.nbPages }} pages</td></tr>
+                    <tr>
+                        <th>Temps de lecture</th>
+                        <td>{{ livre.nbPages|reading_time }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date de publication</th>
+                        <td>{{ livre.datePublication|date('d/m/Y') }} ({{ livre.datePublication|time_ago }})</td>
+                    </tr>
+                    <tr><th>Disponibilité</th>
+                        <td>{{ book_status_badge(livre.disponible)|raw }}</td>
+                    </tr>
+                    <tr>
+                        <th>Auteur</th>
+                        <td><a href="{{ path('app_auteur_show', {'id': livre.auteur.id}) }}">{{ livre.auteur.prenom }} {{ livre.auteur.nom }}</a></td>
+                    </tr>
+                    <tr>
+                        <th>Genre</th>
+                        <td><span style="background-color: {{ livre.genre.couleur }}; color: white; padding: 5px 15px; border-radius: 20px;">{{ livre.genre.nom }}</span></td>
+                    </tr>
+                    <tr>
+                        <th>Tags</th>
+                        <td>{% for tag in livre.tags %}<span style="background-color: {{ tag.couleur }}; color: white; padding: 5px 10px; border-radius: 15px; margin-right: 5px;">{{ tag.nom }}</span>{% else %}Aucun tag{% endfor %}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; text-align: center;">
+            <form method="post" action="{{ path('app_reading_add', {'id': livre.id}) }}" style="display: inline;">
+                <button class="btn btn-success btn-lg">📖 Ajouter à ma liste de lecture</button>
+            </form>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div style="display: flex; gap: 10px;">
+            <a href="{{ path('app_livre_index') }}" class="btn btn-secondary">← Retour</a>
+            {% if is_granted('ROLE_BIBLIOTHECAIRE') %}
+                <a href="{{ path('app_livre_edit', {'id': livre.id}) }}" class="btn btn-warning">✏️ Modifier</a>
+            {% endif %}
+            {{ include('livre/_delete_form.html.twig') }}
+        </div>
+    </div>
+</div>
+{% endblock %}

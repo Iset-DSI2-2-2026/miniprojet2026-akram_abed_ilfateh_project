@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier tag - BookShelf{% endblock %}
+
+{% block body %}
+    <div class="card">
+        <div class="card-header">
+            <h3 class="mb-0">✏️ Modifier tag</h3>
+        </div>
+        <div class="card-body">
+            {{ include('tag/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+        </div>
+    </div>
+{% endblock %}

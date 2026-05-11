@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - BookShelf{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="card" style="text-align: center;">
+        <div class="card-header">
+            <h1 style="margin: 0; color: #007bff;">📚 Bienvenue sur BookShelf</h1>
+        </div>
+        <div class="card-body">
+            <p style="font-size: 18px; margin-bottom: 30px;">
+                Votre bibliothèque en ligne pour gérer et découvrir des livres.
+            </p>
+            
+            {% if app.user %}
+                <div style="background: #d4edda; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+                    <h2 style="color: #155724;">Bonjour {{ app.user.pseudo }} ! 👋</h2>
+                    <p>Vous êtes connecté à votre compte BookShelf.</p>
+                    <a href="{{ path('app_livre_index') }}" class="btn btn-primary">📖 Voir les livres</a>
+                    <a href="{{ path('app_logout') }}" class="btn btn-danger" style="background: #dc3545;">🚪 Se déconnecter</a>
+                </div>
+            {% else %}
+                <div style="background: #d1ecf1; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+                    <h2 style="color: #0c5460;">Bienvenue visiteur ! 👋</h2>
+                    <p>Connectez-vous ou inscrivez-vous pour profiter de toutes les fonctionnalités.</p>
+                    <div style="display: flex; gap: 15px; justify-content: center;">
+                        <a href="{{ path('app_login') }}" class="btn btn-primary" style="background: #007bff;">🔐 Se connecter</a>
+                        <a href="{{ path('app_register') }}" class="btn btn-success" style="background: #28a745;">📝 S'inscrire</a>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <div class="grid" style="margin-top: 40px;">
+                <div class="card" style="text-align: center;">
+                    <div class="card-body">
+                        <div style="font-size: 48px;">📖</div>
+                        <h3>Collection complète</h3>
+                        <p>Des milliers de livres à votre disposition</p>
+                    </div>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div class="card-body">
+                        <div style="font-size: 48px;">🔍</div>
+                        <h3>Recherche avancée</h3>
+                        <p>Trouvez le livre parfait en quelques clics</p>
+                    </div>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div class="card-body">
+                        <div style="font-size: 48px;">⭐</div>
+                        <h3>Liste de lecture</h3>
+                        <p>Créez votre propre liste de souhaits</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

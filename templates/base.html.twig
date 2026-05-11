@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BookShelf{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+    <div class="container">
+        <a href="{{ path('app_home') }}" class="navbar-brand">📚 BookShelf</a>
+        <div class="nav-links">
+        {% if is_granted('ROLE_ADMIN') %}
+    <a href="{{ path('app_user_index') }}">👥 Utilisateurs</a>
+{% endif %}
+    <a href="{{ path('app_home') }}">Accueil</a>
+    <a href="{{ path('app_livre_index') }}">Livres</a>
+    <a href="{{ path('app_auteur_index') }}">Auteurs</a>
+    <a href="{{ path('app_genre_index') }}">Genres</a>
+    <a href="{{ path('app_tag_index') }}">Tags</a>
+    <a href="{{ path('app_reading_list') }}" style="position: relative;">
+        📖 Ma liste
+        {% set readingCount = app.session.get('reading_list', [])|length %}
+        {% if readingCount > 0 %}
+            <span style="position: absolute; top: -8px; right: -15px; background: #dc3545; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px;">
+                {{ readingCount }}
+            </span>
+        {% endif %}
+    </a>
+    
+    {% if app.user %}
+        <span style="color: white;">👤 {{ app.user.pseudo }}</span>
+        <a href="{{ path('app_logout') }}" style="background: #dc3545; color: white; padding: 5px 12px; border-radius: 5px;">🚪 Déconnexion</a>
+    {% else %}
+        <a href="{{ path('app_login') }}" style="background: #007bff; color: white; padding: 5px 12px; border-radius: 5px;">🔐 Connexion</a>
+        <a href="{{ path('app_register') }}" style="background: #28a745; color: white; padding: 5px 12px; border-radius: 5px;">📝 Inscription</a>
+    {% endif %}
+</div>
+    </div>
+</nav>
+
+    <main>
+        <div class="container">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }}">{{ message }}</div>
+                {% endfor %}
+            {% endfor %}
+            
+            {% block body %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 BookShelf - Bibliothèque en ligne</p>
+        </div>
+    </footer>
+</body>
+</html>

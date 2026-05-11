@@ -1,0 +1,15 @@
+{{ form_start(form) }}
+    <div class="mb-3">
+        {{ form_label(form.nom) }}
+        {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Bestseller'}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_label(form.couleur) }}
+        {{ form_widget(form.couleur, {'attr': {'class': 'form-control', 'placeholder': '#FF0000'}}) }}
+        <small class="text-muted">Code hexadécimal (ex: #FF5733)</small>
+    </div>
+    <div class="action-buttons">
+        <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+        <a href="{{ path('app_tag_index') }}" class="btn btn-secondary">Annuler</a>
+    </div>
+{{ form_end(form) }}

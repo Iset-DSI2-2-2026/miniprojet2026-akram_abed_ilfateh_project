@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Livres - BookShelf{% endblock %}
+
+{% block body %}
+<div class="card">
+    <div class="card-header">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <h2 style="margin: 0;">📚 Liste des livres</h2>
+            {% if is_granted('ROLE_BIBLIOTHECAIRE') %}
+                <a href="{{ path('app_livre_new') }}" class="btn btn-primary">+ Ajouter un livre</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        
+        <!-- Search & Filter Form -->
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h3 style="margin: 0 0 15px 0;">🔍 Rechercher un livre</h3>
+            <form method="get" action="{{ path('app_livre_index') }}">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Titre</label>
+                        <input type="text" name="titre" value="{{ app.request.query.get('titre') }}" class="form-control" placeholder="Rechercher par titre...">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Genre</label>
+                        <select name="genre" class="form-select">
+                            <option value="">Tous les genres</option>
+                            {% for genre in genres %}
+                                <option value="{{ genre.id }}" {% if app.request.query.get('genre') == genre.id %}selected{% endif %}>
+                                    {{ genre.nom }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Tag</label>
+                        <select name="tag" class="form-select">
+                            <option value="">Tous les tags</option>
+                            {% for tag in tags %}
+                                <option value="{{ tag.id }}" {% if app.request.query.get('tag') == tag.id %}selected{% endif %}>
+                                    {{ tag.nom }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Disponibilité</label>
+                        <select name="disponible" class="form-select">
+                            <option value="">Tous</option>
+                            <option value="1" {% if app.request.query.get('disponible') == '1' %}selected{% endif %}>Disponible</option>
+                            <option value="0" {% if app.request.query.get('disponible') == '0' %}selected{% endif %}>Indisponible</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button type="submit" class="btn btn-primary">🔍 Rechercher</button>
+                    <a href="{{ path('app_livre_index') }}" class="btn btn-secondary">🔄 Réinitialiser</a>
+                </div>
+            </form>
+        </div>
+        
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Titre</th>
+                    <th>Auteur</th>
+                    <th>Genre</th>
+                    <th>Pages</th>
+                    <th>Disponible</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for livre in livres %}
+                <tr>
+                    <td>
+                        {% if livre.imageName %}
+                            <img src="{{ asset('uploads/livres/' ~ livre.imageName) }}" alt="Miniature" style="height: 50px; width: 50px; object-fit: cover; border-radius: 4px;">
+                        {% else %}
+                            <span style="font-size: 30px;">📖</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ livre.titre }}</td>
+                    <td>{{ livre.auteur.prenom }} {{ livre.auteur.nom }}</td>
+                    <td>{{ livre.genre.nom }}</td>
+                    <td>{{ livre.nbPages }}</td>
+                    <td>
+                        {% if livre.disponible %}
+                            <span class="badge badge-success">Disponible</span>
+                        {% else %}
+                            <span class="badge badge-danger">Indisponible</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('app_livre_show', {'id': livre.id}) }}" class="btn btn-sm btn-primary">Voir</a>
+                        {% if is_granted('ROLE_BIBLIOTHECAIRE') %}
+                            <a href="{{ path('app_livre_edit', {'id': livre.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="text-center">Aucun livre trouvé</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        {# Pagination #}
+        {% if livres.paginationData.pageCount > 1 %}
+            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
+                {% if livres.paginationData.current > 1 %}
+                    <a href="{{ path('app_livre_index', app.request.query.all|merge({'page': livres.paginationData.current - 1})) }}" class="btn btn-primary">← Précédent</a>
+                {% endif %}
+                
+                <span style="padding: 8px 15px; background: #f8f9fa; border-radius: 5px;">
+                    Page {{ livres.paginationData.current }} / {{ livres.paginationData.pageCount }}
+                </span>
+                
+                {% if livres.paginationData.current < livres.paginationData.pageCount %}
+                    <a href="{{ path('app_livre_index', app.request.query.all|merge({'page': livres.paginationData.current + 1})) }}" class="btn btn-primary">Suivant →</a>
+                {% endif %}
+            </div>
+            
+            <div style="text-align: center; margin-top: 10px; color: #666;">
+                Affichage {{ livres.paginationData.firstItemNumber }} - {{ livres.paginationData.lastItemNumber }}
+                sur {{ livres.paginationData.totalCount }} livres
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

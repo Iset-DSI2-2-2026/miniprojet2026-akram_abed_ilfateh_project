@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ genre.nom }} - BookShelf{% endblock %}
+
+{% block body %}
+    <div class="card">
+        <div class="card-header" style="background-color: {{ genre.couleur }}; color: white;">
+            <h3 class="mb-0">🏷️ Genre : {{ genre.nom }}</h3>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <tr>
+                    <th style="width: 30%;">Nom</th>
+                    <td>{{ genre.nom }}</td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>{{ genre.description ?: 'Aucune description' }}</td>
+                </tr>
+                <tr>
+                    <th>Couleur</th>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 40px; height: 30px; background-color: {{ genre.couleur }}; border: 1px solid #ddd;"></div>
+                            <code>{{ genre.couleur }}</code>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Livres</th>
+                    <td>{{ genre.livres|length }} livre(s)</td>
+                </tr>
+            </table>
+
+            {% if genre.livres|length > 0 %}
+                <h4 class="mt-4 mb-3">📚 Livres dans ce genre</h4>
+                <div class="row">
+                    {% for livre in genre.livres %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>{{ livre.titre }}</h5>
+                                    <p class="small text-muted">Auteur: {{ livre.auteur.prenom }} {{ livre.auteur.nom }}</p>
+                                    <a href="{{ path('app_livre_show', {'id': livre.id}) }}" class="btn btn-sm btn-primary">Voir</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-footer">
+            <div class="action-buttons">
+                <a href="{{ path('app_genre_index') }}" class="btn btn-secondary">← Retour</a>
+                <a href="{{ path('app_genre_edit', {'id': genre.id}) }}" class="btn btn-warning">✏️ Modifier</a>
+                {{ include('genre/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
